@@ -77,11 +77,6 @@
                 {
                     this.sibling.push( new Point(this.x, this.y + unite) )
                 }
-
-                console.log('entourage')    
-                for( let i = 0 ; i < this.sibling.length; i++){
-                    console.log(' - ' + this.sibling[i].x , this.sibling[i].y )
-                }
                       
                 return this.sibling;
             }
@@ -203,8 +198,9 @@
                 
                 
                 const friend = point.getFriend();  
+                console.log("GEN",countGenerations(point));
                 
-                if(friend.length > 1){
+                if(friend.length > 0){
 
                     // joindre les points continus d'un joueur
                     // for(let i=0; i < friend.length; i++){
@@ -214,7 +210,7 @@
                     //         joinTwoPoints(pointCtx, friend[i],friend[0],currentPlayer.color);
                     //     }
                     // }
-                    console.log("GEN",countGenerations(point));
+                    // console.log("GEN",countGenerations(point));
                     
                 }
                 revertPlayer( ctx , p1 , p2);
@@ -235,18 +231,23 @@
         
         function countGenerations(startPoint, maxDepth = 100) {
         const queue = [[startPoint, 0]];
+
         const visited = new Set([startPoint]);
         
         let generations = 0;
         
         while (queue.length > 0) {
+        console.log("Q: ",queue.length)
+            
             const [currentPoint, depth] = queue.shift();
+            console.log("Q",queue.length)
             
             if (depth > generations) {
-            generations++;
+                generations++;
             }
             
             const neighbors = currentPoint.getFriend();
+            console.log("V:",visited)
             for (const neighbor of neighbors) {
                 if (!visited.has(neighbor)) {
                     visited.add(neighbor);
