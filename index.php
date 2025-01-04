@@ -230,36 +230,28 @@
 
         
         function countGenerations(startPoint, maxDepth = 100) {
-        const queue = [[startPoint, 0]];
-
-        const visited = new Set([startPoint]);
-        
-        let generations = 0;
-        
-        while (queue.length > 0) {
-        console.log("Q: ",queue.length)
+            let generations = 0;
             
-            const [currentPoint, depth] = queue.shift();
-            console.log("Q",queue.length)
-            
-            if (depth > generations) {
-                generations++;
-            }
-            
-            const neighbors = currentPoint.getFriend();
-            console.log("V:",visited)
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    currentPoint.children.push(neighbor);
-                    neighbor.ancestors.push(currentPoint);
-                    queue.push([neighbor, depth + 1]);
+            function recursiveCount(currentPoint, depth) {
+                if (depth > generations) {
+                    generations++;
+                }
+                
+                const neighbors = currentPoint.getFriend();
+                for (const neighbor of neighbors) {
+                    if (!neighbor.ancestors.includes(currentPoint)) {
+                        currentPoint.children.push(neighbor);
+                        neighbor.ancestors.push(currentPoint);
+                        recursiveCount(neighbor, depth + 1);
+                    }
                 }
             }
+
+            recursiveCount(startPoint, 0);
+            
+            return generations;
         }
-        
-        return generations;
-        }
+
 
         function getNeighbors(point) {
             const { x, y } = point;
