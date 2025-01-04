@@ -205,15 +205,17 @@
                 const friend = point.getFriend();  
                 
                 if(friend.length > 1){
+
                     // joindre les points continus d'un joueur
+                    // for(let i=0; i < friend.length; i++){
+                    //     if( !isTheSamePoint(friend[i], friend.at(-1))){
+                    //         joinTwoPoints(pointCtx, friend[i], friend[i+1],currentPlayer.color );
+                    //     } else if ( isTheSamePoint(friend[i], friend.at(-1))){
+                    //         joinTwoPoints(pointCtx, friend[i],friend[0],currentPlayer.color);
+                    //     }
+                    // }
+                    console.log("GEN",countGenerations(point));
                     
-                    for(let i=0; i < friend.length; i++){
-                        if( !isTheSamePoint(friend[i], friend.at(-1))){
-                            joinTwoPoints(pointCtx, friend[i], friend[i+1],currentPlayer.color );
-                        } else if ( isTheSamePoint(friend[i], friend.at(-1))){
-                            joinTwoPoints(pointCtx, friend[i],friend[0],currentPlayer.color);
-                        }
-                    }
                 }
                 revertPlayer( ctx , p1 , p2);
             }
@@ -244,14 +246,14 @@
             generations++;
             }
             
-            const neighbors = getNeighbors(currentPoint);
+            const neighbors = currentPoint.getFriend();
             for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                currentPoint.children.push(neighbor);
-                neighbor.ancestors.push(currentPoint);
-                queue.push([neighbor, depth + 1]);
-            }
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    currentPoint.children.push(neighbor);
+                    neighbor.ancestors.push(currentPoint);
+                    queue.push([neighbor, depth + 1]);
+                }
             }
         }
         
