@@ -56,48 +56,41 @@
               
             }
             
-            getSibling(left , right , top , bottom , unite){
-                
-                if( left <= (this.x - unite )   )
-                {
-                    this.sibling.push( new Point( this.x - unite, this.y))
-                }
-                
-                if( right >= this.x + unite){
-                    this.sibling.push(new 
-                        Point(this.x + unite, this.y))
-                }
-                
-                if(top <= this.y - unite)
-                {
-                    this.sibling.push(new 
-                    Point(this.x, this.y - unite))
-                }
-                if(bottom >= this.y + unite)
-                {
-                    this.sibling.push( new Point(this.x, this.y + unite) )
-                }
-                      
-                return this.sibling;
-            }
+            
         
-        setFriend(sibling, allPointsOfCurrentPlayer){
-            if(allPointsOfCurrentPlayer){
-                for( let j = 0 ; j< allPointsOfCurrentPlayer.length; j++)  {
-                    for(let i = 0 ; i< sibling.length; i++){
+        // setFriend(sibling, allPointsOfCurrentPlayer){
+        //     if(allPointsOfCurrentPlayer){
+        //         for( let j = 0 ; j< allPointsOfCurrentPlayer.length; j++)  {
+        //             for(let i = 0 ; i< sibling.length; i++){
                         
-                        if(sibling[i].x==allPointsOfCurrentPlayer[j].x && sibling[i].y==allPointsOfCurrentPlayer[j].y){
-                            this.friends.push(sibling[i])
+        //                 if(sibling[i].x==allPointsOfCurrentPlayer[j].x && sibling[i].y==allPointsOfCurrentPlayer[j].y){
+        //                     this.friends.push(sibling[i])
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+        // getFriend(){
+        //     return this.friends;
+        // }
+    }   
+
+    function getFriend(point, allPointsOfCurrentPlayer, sibling_){
+        friends = [];
+        if(allPointsOfCurrentPlayer){
+            for( let j = 0 ; j< allPointsOfCurrentPlayer.length; j++){
+                for(let i = 0 ; i< sibling_.length; i++){
+                    if(sibling_[i].x==allPointsOfCurrentPlayer[j].x && sibling_[i].y==allPointsOfCurrentPlayer[j].y){
+                            friends.push(sibling_[i])
                         }
-                    }
                 }
             }
         }
+        return friends;
+    }
 
-        getFriend(){
-            return this.friends;
-        }
-    }   
+   
     
     class Player {
         score ;
@@ -137,6 +130,8 @@
             left: rect.left,
             width: rect.width,
             height: rect.height,
+            right: rect.left + rect.width,
+            bottom: rect.top + rect.height
         };
 
         // Dessiner des points
@@ -185,19 +180,14 @@
                 
                 let sbl = " ";
                 
-                const sb = point.getSibling(
-                position.left,
-                position.left + position.width,
-                position.top,
-                position.top + position.height,
-                unite);
+                const sb = getSibling(point);
 
-                point.setFriend(sb,currentPlayer.points);
+                // point.setFriend(sb,currentPlayer.points);
                
                 para.innerHTML=tabPoint.length + " "+ sb.length;
                 
                 
-                const friend = point.getFriend();  
+                const friend = getFriend(point, currentPlayer.points, sb);  
                 console.log("GEN",countGenerations(point));
                 
                 if(friend.length > 0){
@@ -233,18 +223,26 @@
             let generations = 0;
             
             function recursiveCount(currentPoint, depth) {
+                console.log("d",depth);
                 if (depth > generations) {
                     generations++;
                 }
                 
-                const neighbors = currentPoint.getFriend();
-                for (const neighbor of neighbors) {
-                    if (!neighbor.ancestors.includes(currentPoint)) {
-                        currentPoint.children.push(neighbor);
-                        neighbor.ancestors.push(currentPoint);
-                        recursiveCount(neighbor, depth + 1);
-                    }
-                }
+                const currentPl = getCurrentPlayer();
+                
+                const sb = getSibling(currentPoint);
+                
+                const neighbors = getFriend(currentPoint, currentPl.points ,sb ).filter(nb =>nb != currentPoint );
+                console.log("sb",sb);
+                console.log("N",neighbors.length);
+
+                // for (const neighbor of neighbors) {
+                //     if (!neighbor.ancestors.includes(currentPoint)) {
+                //         currentPoint.children.push(neighbor);
+                //         neighbor.ancestors.push(currentPoint);
+                //         recursiveCount(neighbor, depth + 1);
+                //     }
+                // }
             }
 
             recursiveCount(startPoint, 0);
@@ -381,6 +379,32 @@
           
           return { a, b };
         }
+
+        function getSibling(point){
+            sib = [];
+                if( position.left <= (point.x - unite )   )
+                {
+                    sib.push( new Point( point.x - unite, point.y))
+                }
+                
+                if( position.right >= point.x + unite){
+                    sib.push(new 
+                        Point(point.x + unite, point.y))
+                }
+
+                if(position.top <= point.y - unite)
+                {
+                    sib.push(new 
+                    Point(point.x, point.y - unite))
+                }
+
+                if(position.bottom >= point.y + unite)
+                {
+                    sib.push( new Point(point.x, point.y + unite) )
+                }
+                      
+                return sib;
+            }
         
     </script>
 
