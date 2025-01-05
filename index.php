@@ -111,7 +111,7 @@
         }   
     }
 
-        const unite = 25;
+        const unite = 50;
         const canvas = document.getElementById('monCanvas');
         const ctx = canvas.getContext('2d');
         const para = document.getElementById('para');
@@ -187,10 +187,10 @@
                 para.innerHTML=tabPoint.length + " "+ sb.length;
                 
                 
-                const friend = getFriend(point, currentPlayer.points, sb);  
+                // const friend = getFriend(point, currentPlayer.points, sb);  
                 console.log("GEN",countGenerations(point));
                 
-                if(friend.length > 0){
+                // if(friend.length > 0){
 
                     // joindre les points continus d'un joueur
                     // for(let i=0; i < friend.length; i++){
@@ -202,7 +202,7 @@
                     // }
                     // console.log("GEN",countGenerations(point));
                     
-                }
+                // }
                 revertPlayer( ctx , p1 , p2);
             }
 
@@ -224,25 +224,52 @@
             
             function recursiveCount(currentPoint, depth) {
                 console.log("d",depth);
+                console.log("g",generations);
+                console.log("p",currentPoint);
                 if (depth > generations) {
                     generations++;
+                    console.log("g",generations);
                 }
                 
                 const currentPl = getCurrentPlayer();
                 
                 const sb = getSibling(currentPoint);
                 
-                const neighbors = getFriend(currentPoint, currentPl.points ,sb ).filter(nb =>nb != currentPoint );
-                console.log("sb",sb);
-                console.log("N",neighbors.length);
+                const neighbors = getFriend(currentPoint, currentPl.points ,sb )
+                
+                .filter(nb =>  {
+                    !currentPoint.ancestors.some(anc => nb.x === anc.x && nb.y ===anc.y );
+                } );
+                
+                
+                console.log("N",neighbors);
 
-                for (const neighbor of neighbors) {
-                    if (!neighbor.ancestors.includes(currentPoint)) {
-                        currentPoint.children.push(neighbor);
-                        neighbor.ancestors.push(currentPoint);
-                        recursiveCount(neighbor, depth + 1);
-                    }
+                if(neighbors.length >0){
+                    // generations++;
+
+                    // for (let index = 0; index < neighbors.length; index++) {
+                        
+                        neighbors[0].ancestors.push(currentPoint);
+                        // currentPoint.children.push(neighbors[0]);
+                        if(depth<2)
+                            recursiveCount(neighbors[0], depth + 1);
+                    // }
+                    // for (const neighbor of neighbors) {
+                    //     neighbor.ancestors.push(currentPoint);
+                    //     currentPoint.children.push(neighbor);
+                    //     recursiveCount(neighbor, depth + 1);
+
+                        // if(neighbor.ancestors.length >0 ){
+                        //     if (!neighbor.ancestors.includes(currentPoint)) {
+                        //         currentPoint.children.push(neighbor);
+                        //         recursiveCount(neighbor, depth + 1);
+                        //         // neighbor.ancestors.push(currentPoint);
+                        //     }
+                        // }
+    
+                    // }
                 }
+                
             }
 
             recursiveCount(startPoint, 0);
