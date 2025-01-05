@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grille avec Points d'Intersection</title>
+    <title>JeuDePoint</title>
     <style>
         .grid {
             display: grid;
@@ -236,13 +236,13 @@
                 console.log("sb",sb);
                 console.log("N",neighbors.length);
 
-                // for (const neighbor of neighbors) {
-                //     if (!neighbor.ancestors.includes(currentPoint)) {
-                //         currentPoint.children.push(neighbor);
-                //         neighbor.ancestors.push(currentPoint);
-                //         recursiveCount(neighbor, depth + 1);
-                //     }
-                // }
+                for (const neighbor of neighbors) {
+                    if (!neighbor.ancestors.includes(currentPoint)) {
+                        currentPoint.children.push(neighbor);
+                        neighbor.ancestors.push(currentPoint);
+                        recursiveCount(neighbor, depth + 1);
+                    }
+                }
             }
 
             recursiveCount(startPoint, 0);
@@ -382,25 +382,20 @@
 
         function getSibling(point){
             sib = [];
-                if( position.left <= (point.x - unite )   )
+                if( position.left <= (point.x - unite ))
                 {
-                    sib.push( new Point( point.x - unite, point.y))
+                    sib.push(new Point( point.x - unite, point.y))
                 }
-                
                 if( position.right >= point.x + unite){
-                    sib.push(new 
-                        Point(point.x + unite, point.y))
+                    sib.push(new Point(point.x + unite, point.y))
                 }
-
-                if(position.top <= point.y - unite)
+                if(position.top <= (point.y + position.top)  - unite)
                 {
-                    sib.push(new 
-                    Point(point.x, point.y - unite))
+                    sib.push(new Point(point.x, point.y - unite))
                 }
-
-                if(position.bottom >= point.y + unite)
+                if(position.bottom >= (position.top + point.y) + unite)
                 {
-                    sib.push( new Point(point.x, point.y + unite) )
+                    sib.push(new Point(point.x, point.y + unite) )
                 }
                       
                 return sib;
