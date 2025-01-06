@@ -43,7 +43,7 @@
             y ;
             sibling ;
             friends ;
-            ancestors;
+            ancestor;
             children;
             
             constructor ( x_, y_ ){
@@ -51,7 +51,7 @@
                 this.y = y_;
                 this.sibling = [];
                 this.friends = [];
-                this.ancestors = [];
+                this.ancestor ;
                 this.children = [];
               
             }
@@ -181,35 +181,68 @@
                 let sbl = " ";
                 
                 const sb = getSibling(point);
-
-                // point.setFriend(sb,currentPlayer.points);
                
                 para.innerHTML=tabPoint.length + " "+ sb.length;
                 
+            
+                setFarestTravel(point);
                 
-                // const friend = getFriend(point, currentPlayer.points, sb);  
-                console.log("GEN",countGenerations(point));
                 
-                // if(friend.length > 0){
-
-                    // joindre les points continus d'un joueur
-                    // for(let i=0; i < friend.length; i++){
-                    //     if( !isTheSamePoint(friend[i], friend.at(-1))){
-                    //         joinTwoPoints(pointCtx, friend[i], friend[i+1],currentPlayer.color );
-                    //     } else if ( isTheSamePoint(friend[i], friend.at(-1))){
-                    //         joinTwoPoints(pointCtx, friend[i],friend[0],currentPlayer.color);
-                    //     }
-                    // }
-                    // console.log("GEN",countGenerations(point));
-                    
-                // }
                 revertPlayer( ctx , p1 , p2);
             }
 
            
 
         });
-        
+
+
+        function setFarestTravel(startPoint) {
+            let targetOptions = [];
+            let target = [];
+
+            target.push(startPoint);
+            
+            recursiveSearchFriend(startPoint);
+
+            function recursiveSearchFriend(currentPoint) {
+
+                console.log("("+currentPoint.x +","+ currentPoint.y+") rrr");
+                const currentPl = getCurrentPlayer();                
+                const sb = getSibling(currentPoint);
+                
+                let neighbors = getFriend(currentPoint, currentPl.points ,sb );
+
+                if(currentPoint.ancestor){
+                    console.log(" # ("+currentPoint.ancestor.x +","+ currentPoint.ancestor.y+")");
+
+                    neighbors= neighbors.filter(nb =>  
+                        !(nb.x === currentPoint.ancestor.x && nb.y === currentPoint.ancestor .y) 
+                    );
+                }
+                
+
+                console.log("n" ,neighbors);
+                
+                if(neighbors.length >0){
+                    if(neighbors.length === 1){
+                        neighbors[0].ancestor = currentPoint;
+                        target.push(currentPoint);
+                        recursiveSearchFriend(neighbors[0]);
+                    } 
+                    // else if(neighbors.length >1){
+                    //     targetOptions.push(target);
+                    //     otherTarget = target ;
+                        
+                    //     for (let n of neighbors) {
+                    //         n.ancestor = currentPoint;
+                    //         otherTarget.push(currentPoint);
+                    //     }
+                    // }
+                }
+                
+            }
+            console.log("T",target);
+        }
 
         function isTheSamePoint(p1, p2){
             if(p1.x == p2.x && p1.y == p2.y) 
@@ -217,75 +250,6 @@
 
             return false;
         }
-
-        
-        function countGenerations(startPoint, maxDepth = 100) {
-            let generations = 0;
-            
-            function recursiveCount(currentPoint, depth) {
-                console.log("d",depth);
-                console.log("g",generations);
-                console.log("p",currentPoint);
-                if (depth > generations) {
-                    generations++;
-                    console.log("g",generations);
-                }
-                
-                const currentPl = getCurrentPlayer();
-                
-                const sb = getSibling(currentPoint);
-                
-                let neighbors = getFriend(currentPoint, currentPl.points ,sb )
-                    if(currentPoint.ancestors.length >0){
-                        neighbors.filter(nb =>  {
-                        !currentPoint.ancestors.some(anc => nb.x === anc.x && nb.y ===anc.y );
-                    });
-                }
-                
-
-                
-                
-                console.log("N ",neighbors);
-                console.log("c",currentPoint);
-
-                if(neighbors.length >0){
-                    // generations++;
-
-                    for (let index = 0; index < neighbors.length; index++) {
-                        neighbors[index].ancestors.push(currentPoint);
-
-                        console.log("n .",neighbors[index].x ,neighbors[index].y);
-                        console.log("c .",currentPoint.x ,currentPoint.y);
-                        
-                        
-                        // recursiveCount(neighbors[index], depth + 1);
-
-                        // currentPoint.children.push(neighbors[0]);
-                        // if(depth<2)
-                    }
-                    // for (const neighbor of neighbors) {
-                    //     neighbor.ancestors.push(currentPoint);
-                    //     currentPoint.children.push(neighbor);
-                    //     recursiveCount(neighbor, depth + 1);
-
-                        // if(neighbor.ancestors.length >0 ){
-                        //     if (!neighbor.ancestors.includes(currentPoint)) {
-                        //         currentPoint.children.push(neighbor);
-                        //         recursiveCount(neighbor, depth + 1);
-                        //         // neighbor.ancestors.push(currentPoint);
-                        //     }
-                        // }
-    
-                    // }
-                }
-                
-            }
-
-            recursiveCount(startPoint, 0);
-            
-            return generations;
-        }
-
 
         function getNeighbors(point) {
             const { x, y } = point;
@@ -301,7 +265,7 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.ancestors = [];
+                this.ancestor ;
                 this.children = [];
             }
         }
@@ -324,23 +288,23 @@
 
         function addPoint(x, y, player1, player2, currentPlayer){
             if( currentPlayer ==  player1){
-                console.log(currentPlayer.name  +" add point")
+                // console.log(currentPlayer.name  +" add point")
                 player1.points.push(new Point(x, y));
             } else
             if( currentPlayer ==  player2){
-                console.log(currentPlayer.name  +" add point")
+                // console.log(currentPlayer.name  +" add point")
                 player2.points.push(new Point(x, y));
             }
         }
 
         function revertPlayer( ctx, p1 , p2){
             if( currentPlayer ==  p1){
-                console.log('revert 1 to 2')
+                // console.log('revert 1 to 2')
                 ctx.fillStyle = p2.color;
                 currentPlayer = p2;
             } else
             if( currentPlayer ==  p2){
-                console.log('revert 2 to 1')
+                // console.log('revert 2 to 1')
                 ctx.fillStyle = p1.color;
                 currentPlayer = p1;
             }
