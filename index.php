@@ -235,25 +235,34 @@
                 
                 const sb = getSibling(currentPoint);
                 
-                const neighbors = getFriend(currentPoint, currentPl.points ,sb )
+                let neighbors = getFriend(currentPoint, currentPl.points ,sb )
+                    if(currentPoint.ancestors.length >0){
+                        neighbors.filter(nb =>  {
+                        !currentPoint.ancestors.some(anc => nb.x === anc.x && nb.y ===anc.y );
+                    });
+                }
                 
-                .filter(nb =>  {
-                    !currentPoint.ancestors.some(anc => nb.x === anc.x && nb.y ===anc.y );
-                } );
+
                 
                 
-                console.log("N",neighbors);
+                console.log("N ",neighbors);
+                console.log("c",currentPoint);
 
                 if(neighbors.length >0){
                     // generations++;
 
-                    // for (let index = 0; index < neighbors.length; index++) {
+                    for (let index = 0; index < neighbors.length; index++) {
+                        neighbors[index].ancestors.push(currentPoint);
+
+                        console.log("n .",neighbors[index].x ,neighbors[index].y);
+                        console.log("c .",currentPoint.x ,currentPoint.y);
                         
-                        neighbors[0].ancestors.push(currentPoint);
+                        
+                        // recursiveCount(neighbors[index], depth + 1);
+
                         // currentPoint.children.push(neighbors[0]);
-                        if(depth<2)
-                            recursiveCount(neighbors[0], depth + 1);
-                    // }
+                        // if(depth<2)
+                    }
                     // for (const neighbor of neighbors) {
                     //     neighbor.ancestors.push(currentPoint);
                     //     currentPoint.children.push(neighbor);
