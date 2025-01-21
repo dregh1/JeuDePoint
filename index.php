@@ -156,7 +156,6 @@
      
         setCurrentPlayer(pointCtx, p1);       
 
-
         canvas.addEventListener('click', (event) => {
             // Positionner le point à l'emplacement de l'intersection
             let x = placeCorrectly_x(tabCol, event.clientX - position.left);
@@ -224,24 +223,26 @@
                 console.log("n" ,neighbors);
                 
                 if(neighbors.length >0){
-                    if(neighbors.length === 1){
-                        neighbors[0].ancestor = currentPoint;
-                        target.push(currentPoint);
-                        recursiveSearchFriend(neighbors[0]);
-                    } 
-                    // else if(neighbors.length >1){
-                    //     targetOptions.push(target);
-                    //     otherTarget = target ;
-                        
-                    //     for (let n of neighbors) {
-                    //         n.ancestor = currentPoint;
-                    //         otherTarget.push(currentPoint);
-                    //     }
+                    // if(neighbors.length === 1){
+                    //     neighbors[0].ancestor = currentPoint;
+                    //     target.push(currentPoint);
+                    //     recursiveSearchFriend(neighbors[0]);
+                    // } 
+                    // for (let n of neighbors) {
+                    //     n.ancestor = currentPoint;
+                    //     target.push(currentPoint);
+                    //     recursiveSearchFriend(n);
                     // }
+                    neighbors.forEach((neighbor) => {
+                        let newPath = [...target, neighbor];
+                        targetOptions.push(newPath);
+                        neighbor.ancestor = currentPoint;
+                        recursiveSearchFriend(neighbor, newPath); // On fait la récursion en cherchant le prochain point à visiter });
+                    });
                 }
                 
             }
-            console.log("T",target);
+            console.log("T",targetOptions);
         }
 
         function isTheSamePoint(p1, p2){
@@ -400,10 +401,31 @@
                       
                 return sib;
             }
-        
-    </script>
+        const pp1 = new Set();
 
- 
+        class Obj {
+            x;
+            y;
+            constructor(xval , yval){
+                this.x =xval ;
+                this.Y =yval ;
+
+            }
+        }
+
+        o1 = new Obj(0,0);
+        o3= new Obj(0,0);
+
+        o2 = new Obj(0,1);
+
+        pp1.add(o1);
+    console.log("YYYYYYY",pp1.has(o3))
+
+        
+
+</script>
+
+
 </body>
 </html>
 <!-- placer les lignes & colonne OK-->
