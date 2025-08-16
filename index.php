@@ -9,7 +9,7 @@
 <h2 id="currentPlayer">Tour de : </h2>
 <canvas id="monCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
 
-<script src="grid.js"></script>
+<script src="Grid.js"></script>
 <script src="Point.js"></script>
 <script src="Player.js"></script>
 <script src="Game.js"></script>

@@ -33,7 +33,7 @@ class Game {
         const rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-
+        console.log(x,y);
         if (this.grid.isOnGrid(x, y)) {
             // Vérifier si le point est déjà pris
             if (this.isPointAvailable(x, y)) {
