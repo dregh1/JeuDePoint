@@ -55,25 +55,6 @@
                 this.children = [];
               
             }
-            
-            
-        
-        // setFriend(sibling, allPointsOfCurrentPlayer){
-        //     if(allPointsOfCurrentPlayer){
-        //         for( let j = 0 ; j< allPointsOfCurrentPlayer.length; j++)  {
-        //             for(let i = 0 ; i< sibling.length; i++){
-                        
-        //                 if(sibling[i].x==allPointsOfCurrentPlayer[j].x && sibling[i].y==allPointsOfCurrentPlayer[j].y){
-        //                     this.friends.push(sibling[i])
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-        // getFriend(){
-        //     return this.friends;
-        // }
     }   
 
     function getFriend(point, allPointsOfCurrentPlayer, sibling_){
@@ -223,22 +204,28 @@
                 console.log("n" ,neighbors);
                 
                 if(neighbors.length >0){
-                    // if(neighbors.length === 1){
-                    //     neighbors[0].ancestor = currentPoint;
-                    //     target.push(currentPoint);
-                    //     recursiveSearchFriend(neighbors[0]);
-                    // } 
-                    // for (let n of neighbors) {
-                    //     n.ancestor = currentPoint;
-                    //     target.push(currentPoint);
-                    //     recursiveSearchFriend(n);
-                    // }
-                    neighbors.forEach((neighbor) => {
+                    // T 4 , n === T
+                    if(targetOptions.length >=3) {
+                        for ( let n of neighbors){
+                            for(let t of targetOptions){
+                                console.log("@",t,n);
+                                if( isTheSamePoint(t,n) ){
+                                    console.log("FIN");
+
+                                    window.alert(" FIN");
+                                }
+                            }
+                        }
+
+                    } else {
+                        neighbors.forEach((neighbor) => {
                         let newPath = [...target, neighbor];
                         targetOptions.push(newPath);
                         neighbor.ancestor = currentPoint;
                         recursiveSearchFriend(neighbor, newPath); // On fait la récursion en cherchant le prochain point à visiter });
                     });
+                    }
+                    
                 }
                 
             }
