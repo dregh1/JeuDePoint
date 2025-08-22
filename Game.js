@@ -67,6 +67,18 @@ class Game {
             this.points.push(point);
             this.currentPlayer.addPoint(point);
             point.draw(this.ctx, this.currentPlayer.color);
+
+            // Après avoir placé le point
+            // Vérifier et relier avec points adjacents
+            this.connectAdjacentPoints(point);
+
+            // Obtenir la liste des points du joueur actuel
+            const playerPoints = this.currentPlayer.points;
+
+            // Calculer la longueur du plus long chemin à partir de ce point
+            const maxChainLength = this.getMaxChainLength(point, playerPoints, new Set());
+            console.log("Plus long chemin à partir de ce point : ", maxChainLength);
+
             this.switchPlayer();
         } else {
             alert('Point déjà pris');
@@ -79,5 +91,51 @@ class Game {
 
     renderCurrentPlayer() {
         document.getElementById('currentPlayer').innerText = "Tour de : " + this.currentPlayer.name;
+    }
+
+    areAdjacent(p1, p2) {
+        const dx = Math.abs(p1.x - p2.x);
+        const dy = Math.abs(p1.y - p2.y);
+        return (
+            (dx === 0 && dy === this.unite) || // haut/bas
+            (dy === 0 && dx === this.unite) || // gauche/droite
+            (dx === this.unite && dy === this.unite) // diagonale
+        );
+    }
+
+    connectAdjacentPoints(newPoint) {
+        const playerColor = this.currentPlayer.color; // couleur du joueur actuel
+        // Filtrer les points du même joueur
+        const playerPoints = this.currentPlayer.points;
+    
+        for (let p of playerPoints) {
+            if (p !== newPoint && this.areAdjacent(newPoint, p)) {
+                this.drawLine(newPoint, p, playerColor);
+            }
+        }
+    }    
+
+    drawLine(p1, p2, color) {
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = color;  // couleur du joueur
+        this.ctx.beginPath();
+        this.ctx.moveTo(p1.x, p1.y);
+        this.ctx.lineTo(p2.x, p2.y);
+        this.ctx.stroke();
+    }
+
+    getMaxChainLength(currentPoint, pointsConsidered, visited) {
+        visited.add(currentPoint);
+        let maxLength = 1; // Inclut le point actuel
+    
+        for (let p of pointsConsidered) {
+            if (!visited.has(p) && this.areAdjacent(currentPoint, p)) {
+                const length = 1 + this.getMaxChainLength(p, pointsConsidered, visited);
+                maxLength = Math.max(maxLength, length);
+            }
+        }
+    
+        visited.delete(currentPoint);
+        return maxLength;
     }
 }
