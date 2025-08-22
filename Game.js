@@ -115,9 +115,9 @@ class Game {
         }
     }    
 
-    drawLine(p1, p2) {
+    drawLine(p1, p2, color) {
         this.ctx.lineWidth = 3;
-        this.ctx.strokeStyle = 'gray'; // ou la couleur du joueur si besoin
+        this.ctx.strokeStyle = color;  // couleur du joueur
         this.ctx.beginPath();
         this.ctx.moveTo(p1.x, p1.y);
         this.ctx.lineTo(p2.x, p2.y);
