@@ -71,13 +71,13 @@ class Game {
             // Obtenir la liste des points du joueur actuel
             const playerPoints = this.currentPlayer.points;
 
-            // Calculer la longueur du plus long chemin à partir de ce point
-            const maxChainLength = this.getMaxChainLength(point, playerPoints, new Set());
-            console.log("Plus long chemin à partir de ce point : ", maxChainLength);
-
             // Après avoir placé le point
-            this.relierPointsDeMaxChain(point, playerPoints);
-            
+            // this.relierPointsDeMaxChain(point, playerPoints);
+            const shortestClosedChain = this.findShortestClosedChain(point, playerPoints, new Set(), [], null);
+ 
+            if (shortestClosedChain && shortestClosedChain.length >= 4) {
+                this.joinClosedChaîn(shortestClosedChain, this.currentPlayer.color);
+            }
 
 
             this.switchPlayer();
@@ -125,6 +125,48 @@ class Game {
         this.ctx.stroke();
     }
 
+    findShortestClosedChain(currentPoint, pointsConsidered, visited, chain, bestChain) {
+        visited.add(currentPoint);
+        chain.push(currentPoint);
+    
+        // Vérifier si la chaîne est fermée (plus d'un point, et premier et dernier sont adjacents)
+        if (chain.length >= 4 && this.areAdjacent(chain[0], chain[chain.length - 1])) {
+            // Si c'est la première boucle ou si cette chaîne est plus courte que la meilleure trouvée
+            if (!bestChain || chain.length < bestChain.length) {
+                bestChain = [...chain]; // copier la chaîne
+            }
+            // On ne continue pas plus loin pour cette branche
+            visited.delete(currentPoint);
+            chain.pop();
+            return bestChain;
+        }
+    
+        // Explorer les points adjacents non visités
+        for (let p of pointsConsidered) {
+            if (!visited.has(p) && this.areAdjacent(currentPoint, p)) {
+                bestChain = this.findShortestClosedChain(p, pointsConsidered, visited, chain, bestChain);
+            }
+        }
+    
+        // Backtracking
+        visited.delete(currentPoint);
+        chain.pop();
+    
+        return bestChain;
+    }
+
+    joinClosedChaîn(chainPoints, couleur) {
+        if (!chainPoints || chainPoints.length < 4) return; // Vérification
+    
+        // Relier chaque point à son voisin suivant, en fermant la boucle
+        for (let i = 0; i < chainPoints.length; i++) {
+            const p1 = chainPoints[i];
+            const p2 = chainPoints[(i + 1) % chainPoints.length]; // boucle
+            this.drawLine(p1, p2, couleur);
+        }
+    }
+    
+    //unused fonction
     getMaxChainLength(currentPoint, pointsConsidered, visited) {
         visited.add(currentPoint);
         let maxLength = 1; // Inclut le point actuel
@@ -177,4 +219,5 @@ class Game {
             }        
         }
     }
+    
 }
