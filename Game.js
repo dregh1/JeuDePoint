@@ -68,16 +68,15 @@ class Game {
             this.currentPlayer.addPoint(point);
             point.draw(this.ctx, this.currentPlayer.color);
 
-            // Après avoir placé le point
-            // Vérifier et relier avec points adjacents
-            this.connectAdjacentPoints(point);
-
             // Obtenir la liste des points du joueur actuel
             const playerPoints = this.currentPlayer.points;
 
             // Calculer la longueur du plus long chemin à partir de ce point
             const maxChainLength = this.getMaxChainLength(point, playerPoints, new Set());
             console.log("Plus long chemin à partir de ce point : ", maxChainLength);
+
+            // Après avoir placé le point
+            this.relierPointsDeMaxChain(point, playerPoints);
 
             this.switchPlayer();
         } else {
@@ -137,5 +136,42 @@ class Game {
     
         visited.delete(currentPoint);
         return maxLength;
+    }
+
+    collectChainPoints(currentPoint, pointsConsidered, visited, chainPoints) {
+        visited.add(currentPoint);
+        chainPoints.push(currentPoint);
+        for (let p of pointsConsidered) {
+            if (!visited.has(p) && this.areAdjacent(currentPoint, p)) {
+                this.collectChainPoints(p, pointsConsidered, visited, chainPoints);
+            }
+        }
+    }
+
+    relierPointsDeMaxChain(currentPoint, pointsConsidered) {
+        const visited = new Set();
+        const maxLength = this.getMaxChainLength(currentPoint, pointsConsidered, visited);
+        
+        if (maxLength >= 4) {
+            const chainPoints = [];
+            this.collectChainPoints(currentPoint, pointsConsidered, new Set(), chainPoints);
+            
+            // Vérifier si le dernier et le premier sont adjacents
+            const firstPoint = chainPoints[0];
+            const lastPoint = chainPoints[chainPoints.length - 1];
+    
+            if (this.areAdjacent(firstPoint, lastPoint)) {
+                // Relier le dernier au premier pour fermer la boucle
+               // Relier chaque point à son voisin suivant
+                for (let i = 0; i < chainPoints.length - 1; i++) {
+                    this.drawLine(chainPoints[i], chainPoints[i + 1], chainPoints[i].color);
+                }
+            } else {
+                // Si pas adjacents, ne pas fermer la boucle
+                console.log("Les points ne sont pas adjacents, boucle non fermée");
+            }
+    
+            
+        }
     }
 }
