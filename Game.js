@@ -72,11 +72,17 @@ class Game {
             const playerPoints = this.currentPlayer.points;
 
             // Après avoir placé le point
-            // this.relierPointsDeMaxChain(point, playerPoints);
             const shortestClosedChain = this.findShortestClosedChain(point, playerPoints, new Set(), [], null);
  
             if (shortestClosedChain && shortestClosedChain.length >= 4) {
-                this.joinClosedChaîn(shortestClosedChain, this.currentPlayer.color);
+                 // Vérifier si l’adversaire a un point à l’intérieur
+                const adversairePoints = this.getOpponentPoints(); // À définir selon ton code
+                const adversaireInside = this.doesOpponentHavePointInside(shortestClosedChain, adversairePoints);
+
+                if (adversaireInside) {
+                    // Il y a un point adverse à l’intérieur
+                    this.joinClosedChaîn(shortestClosedChain, this.currentPlayer.color);
+                }
             }
 
 
@@ -164,6 +170,41 @@ class Game {
             const p2 = chainPoints[(i + 1) % chainPoints.length]; // boucle
             this.drawLine(p1, p2, couleur);
         }
+    }
+
+    getOpponentPoints() {
+        // Récupère tous les points de tous les joueurs sauf le joueur actuel
+        const adversaryPoints = [];
+        for (const player of this.players) {
+            if (player !== this.currentPlayer) {
+                adversaryPoints.push(...player.points);
+            }
+        }
+        return adversaryPoints;
+    }
+
+    doesOpponentHavePointInside(polygonePoints, adversaryPoints) {
+        for (const p of adversaryPoints) {
+            if (this.isOpponentPointInsidePolygon(p, polygonePoints)) {
+                return true; // Au moins un point à l’intérieur
+            }
+        }
+        return false; // Aucun point à l’intérieur
+    }
+    
+
+    isOpponentPointInsidePolygon(point, polygonPoints) {
+        let inside = false;
+        const n = polygonPoints.length;
+        for (let i = 0, j = n - 1; i < n; j = i++) {
+            const xi = polygonPoints[i].x, yi = polygonPoints[i].y;
+            const xj = polygonPoints[j].x, yj = polygonPoints[j].y;
+    
+            const intersect = ((yi > point.y) !== (yj > point.y)) &&
+                (point.x < ((xj - xi) * (point.y - yi)) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
     }
     
     //unused fonction
