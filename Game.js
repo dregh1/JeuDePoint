@@ -77,6 +77,8 @@ class Game {
 
             // Après avoir placé le point
             this.relierPointsDeMaxChain(point, playerPoints);
+            
+
 
             this.switchPlayer();
         } else {
@@ -160,18 +162,19 @@ class Game {
             const firstPoint = chainPoints[0];
             const lastPoint = chainPoints[chainPoints.length - 1];
     
+            console.log(chainPoints);
             if (this.areAdjacent(firstPoint, lastPoint)) {
                 // Relier le dernier au premier pour fermer la boucle
                // Relier chaque point à son voisin suivant
-                for (let i = 0; i < chainPoints.length - 1; i++) {
-                    this.drawLine(chainPoints[i], chainPoints[i + 1], chainPoints[i].color);
+                for (let i = 0; i < chainPoints.length; i++) {
+                    const p1 = chainPoints[i];
+                    const p2 = chainPoints[(i + 1) % chainPoints.length]; // boucle
+                    this.drawLine(p1, p2, p1.color); // ou la couleur du joueur
                 }
             } else {
                 // Si pas adjacents, ne pas fermer la boucle
                 console.log("Les points ne sont pas adjacents, boucle non fermée");
-            }
-    
-            
+            }        
         }
     }
 }
