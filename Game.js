@@ -165,6 +165,20 @@ class Game {
             this.drawLine(p1, p2, couleur);
         }
     }
+
+    isOpponentPointInsidePolygon(point, polygonPoints) {
+        let inside = false;
+        const n = polygonPoints.length;
+        for (let i = 0, j = n - 1; i < n; j = i++) {
+            const xi = polygonPoints[i].x, yi = polygonPoints[i].y;
+            const xj = polygonPoints[j].x, yj = polygonPoints[j].y;
+    
+            const intersect = ((yi > point.y) !== (yj > point.y)) &&
+                (point.x < ((xj - xi) * (point.y - yi)) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
+    }
     
     //unused fonction
     getMaxChainLength(currentPoint, pointsConsidered, visited) {

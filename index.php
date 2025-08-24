@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
-<title>Jeu Local - Sprint 1</title>
+<title>Jeu Local - Sprint 4 </title>
 </head>
 <body>
 
